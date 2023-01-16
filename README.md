@@ -284,7 +284,7 @@ if __name__ == "__main__":
         return 
       }
       
-      // Rewatch if recognition in not end
+      // Rewatch if recognition is not end
       window.requestAnimationFrame(onFrame);
     };
 
@@ -510,7 +510,7 @@ def speech():
         return 
       }
       
-      // Rewatch if recognition in not end
+      // Rewatch if recognition is not end
       window.requestAnimationFrame(onFrame);
     };
 
@@ -526,13 +526,13 @@ def speech():
 let lang = "th-TH";
 ```
 
-2. กำหนดตัวแปร `end` เพื่อใช้สำหรับหยุดการตรวจจับคืนเสียงเมื่อพูดจบหรือหยุดการวิเคราะห์เสียง
+2. กำหนดตัวแปร `end` เพื่อใช้สำหรับหยุดการตรวจจับคลื่นเสียงเมื่อพูดจบหรือหยุดการวิเคราะห์เสียง
 ```javascript
 // Set variable for stop watchsound
 var end = false;
 ```
 
-3. สร้าง Object ในการวิเคราะห์เสียงพูด และตั้งค่าภาษาให้เป็นภาษาที่กำหนดไว้่จากตัวแปร `lang` ในข้อ 1 และตั้งค่า `continous` เป็น `false` เพื่อให้พูดจบหนึ่งประโยคแล้วเปลี่ยนเป็นเสียงพูดทันที ถ้าตั้งเป็น `true` มันจะฟังไปเรื่อยๆแล้วได้ยินที่ตัวเองพูดด้วยจะพูดซ้ำประโยคเดิมทั้งวัน
+3. สร้าง Object ในการวิเคราะห์เสียงพูด และตั้งค่าภาษาให้เป็นภาษาที่กำหนดไว้จากตัวแปร `lang` ในข้อ 1 และตั้งค่า `continuous` เป็น `false` เพื่อให้พูดจบหนึ่งประโยคแล้วเปลี่ยนเป็นเสียงพูดทันที ถ้าตั้งเป็น `true` มันจะฟังไปเรื่อยๆแล้วได้ยินที่ตัวเองพูดด้วยจะพูดซ้ำประโยคเดิมทั้งวัน
 ```javascript
 // Set up recognition
 var recognition = new webkitSpeechRecognition();
@@ -569,7 +569,7 @@ recognition.onend = function () {
 }
 ```
 
-7. เพิ่มการทำงานให้กับปุ่ม `startBtn` โดยที่เวลาคลิกจะเริ่มวิเคราะห์เสียง `recognition.start()` ซึ่งการทำงานในข้อ 5. จะทำงานหลังจากกดปุ่มนี้แล้วปุ่มนี้จะหายไปปุ่ม `stopBtn` จะขึ้นมาแทนเหมือนที่อะิบายในข้อ 5. ซึ่งปุ่ม `stopBtn` ที่ขึ้นมาแสดงแทนก็จะเพิ่มการทำงานเมื่อคลิกจะหยุดวิเคราะห์เสียงและจะทำงานในข้อที่หกสลับกันไปเรื่อยๆ
+7. เพิ่มการทำงานให้กับปุ่ม `startBtn` โดยที่เวลาคลิกจะเริ่มวิเคราะห์เสียง `recognition.start()` ซึ่งการทำงานในข้อ 5. จะทำงานหลังจากกดปุ่มนี้แล้วปุ่มนี้จะหายไปปุ่ม `stopBtn` จะขึ้นมาแทนเหมือนที่อธิบายในข้อ 5. ซึ่งปุ่ม `stopBtn` ที่ขึ้นมาแสดงแทนก็จะเพิ่มการทำงานเมื่อคลิกจะหยุดวิเคราะห์เสียงและจะทำงานในข้อที่หกสลับกันไปเรื่อยๆ
 ```javascript
 // Add start button on click event
 startBtn.addEventListener('click', function start(event) {
@@ -582,7 +582,7 @@ stopBtn.addEventListener('click', function stop(event) {
 })
 ```
 
-8. ฟังก์ชันนี้จะถูกเริ่มขึ้นหลักจากเราพูดจบหนึ่งประโยค(ดูข้อ 6.) ซึ่ง `url` จะเป็นการใช้ `url_for('speech')` คือการเรียกใช้ `@app.route('/speech')` ของ Flask หลังจากนั้นจะทำการสร้าง `formData` เพื่อส่งข้อมูล form ไปที่ `url` ซึ่งจะส่งข้อความไป ตรง `data.append("text", contentEl.innerText)` ก็คือเอาข้อความที่แสดงใน `contentEl` ที่เราแปลงเสียงเป็นแสดงนั่นแหละส่งไปผ่าน key ที่ชื่อว่า `"text"` และจะถูกเรียกใช้ใน [@app.route('/speech')](#@app.route('/speech')) ส่วน `fetch()` จะเป็นการส่งข้อมูลไปที่ `url` ของเรา ซึ่งเป็น `"method": "POST"` เหมือนที่เราตั้งค้าไว้ใน [@app.route('/speech')](#@app.route('/speech')) แล้วส่ง body เป็น `formData` ที่เราสร้างขึ้น จากนั้น `.then()` จะเป็นการเริ่มต้นการทำงานจริงๆ โดยที่ `.then()` อันแรกจะเริ่มส่งข้อมูลข้อความไปแล้วจะได้ `response` กลับมา แล้วใช้ `(response) => response.blob()` จะเป็นการเปลี่ยน `response` เป็น blob (สตริงอ็อบเจ็กต์ขนาดใหญ่ไบนารี) พูดง่าย ๆ ก็คือทำให้เป็นไฟล์ที่สามารถเล่นเป็นเสียงได้ แล้ว `.then()` ถัดไปจะเป็นการเอา blob ที่ถูงแปลงมาไปใช้ เราจะใช้ `FileReader()` ในการอ่าน blob ให้เป็น `dataURL` หรือเอาไฟล์ที่เล่นเป็นเสียงได้เปลี่ยนเป็น URL ที่เล่นได้อีกที (ยุ่งยากเนาะ) ส่วนข้างล่าง `document.getElementById("audio")` จะเป็นการดึง el ที่เอาไว้เล่นเสียงมา แล้วหยุดเสียง เปลี่ยน `src` เป็น URL ที่แปลงมา `load()` แล้ว `play()` เสียงทันที
+8. ฟังก์ชันนี้จะถูกเริ่มขึ้นหลักจากเราพูดจบหนึ่งประโยค(ดูข้อ 6.) ซึ่ง `url` จะเป็นการใช้ `url_for('speech')` คือการเรียกใช้ `@app.route('/speech')` ของ Flask หลังจากนั้นจะทำการสร้าง `formData` เพื่อส่งข้อมูล form ไปที่ `url` ซึ่งจะส่งข้อความไป ตรง `data.append("text", contentEl.innerText)` ก็คือเอาข้อความที่แสดงใน `contentEl` ที่เราแปลงเสียงไปแสดงนั่นแหละส่งไปผ่าน key ที่ชื่อว่า `"text"` และจะถูกเรียกใช้ใน [@app.route('/speech')](#@app.route('/speech')) ส่วน `fetch()` จะเป็นการส่งข้อมูลไปที่ `url` ของเรา ซึ่งเป็น `"method": "POST"` เหมือนที่เราตั้งค้าไว้ใน [@app.route('/speech')](#@app.route('/speech')) แล้วส่ง body เป็น `formData` ที่เราสร้างขึ้น จากนั้น `.then()` จะเป็นการเริ่มต้นการทำงานจริงๆ โดยที่ `.then()` อันแรกจะเริ่มส่งข้อมูลข้อความไปแล้วจะได้ `response` กลับมา แล้วใช้ `(response) => response.blob()` จะเป็นการเปลี่ยน `response` เป็น blob (สตริงอ็อบเจ็กต์ขนาดใหญ่ไบนารี) พูดง่าย ๆ ก็คือทำให้เป็นไฟล์ที่สามารถเล่นเป็นเสียงได้ แล้ว `.then()` ถัดไปจะเป็นการเอา blob ที่ถูกแปลงมาไปใช้ เราจะใช้ `FileReader()` ในการอ่าน blob ให้เป็น `dataURL` หรือเอาไฟล์ที่เล่นเป็นเสียงได้เปลี่ยนเป็น URL ที่เล่นได้อีกที (ยุ่งยากเนาะ) ส่วนข้างล่าง `document.getElementById("audio")` จะเป็นการดึง el ที่เอาไว้เล่นเสียงมา แล้วหยุดเสียง เปลี่ยน `src` เป็น URL ที่แปลงมา `load()` แล้ว `play()` เสียงทันที
 ```javascript
 // Speak recognition text function
 function speak() {
@@ -650,7 +650,7 @@ async function watchSound() {
       return 
     }
     
-    // Rewatch if recognition in not end
+    // Rewatch if recognition is not end
     window.requestAnimationFrame(onFrame);
   };
 
