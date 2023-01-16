@@ -28,6 +28,9 @@ py -m pip install gTTS
 python main.py
 ```
 
+# Project information
+Flask ที่เราใช้มันจะเป็น server application สำหรับ back-end (หลังบ้าน) หรือส่วนการทำงาน ถ้าต้องการบันทึกเสียงอะไรต่างๆต้องมีการใช้ JavaScript มาใช้ช่วยในการอัดเสียงหรือฟังก์ชันต่างๆสำหรับ front-end (หน้าบ้าน) หรือส่วนที่แสดงให้ผู้ใช้เห็นถึงจะใช้งานได้
+
 # File description
 
 ## main.py
