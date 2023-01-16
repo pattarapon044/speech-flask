@@ -4,14 +4,6 @@ body {
   font-family: 'Athiti', sans-serif !important;
 }
 
-#navbar {
-  background-color: #f5821f !important;
-}
-
 .progress {
   height: 0.5rem !important;
-}
-
-.my-bg {
-  background-color: #f5821f !important;
 }

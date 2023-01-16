@@ -26,18 +26,19 @@ def about():
 
 @app.route("/speech", methods=["POST"])
 def speech():
+    # Function to generate speech audio to response
     def generate():
         with open(f"./static/speech.mp3", "rb") as file:
             data = file.read(1024)
             while data:
                 yield data
                 data = file.read(1024)
-
-    text = request.form.get("text")
-    filename = "speech.mp3"
-    tts = gTTS(text, lang="th")
-    tts.save(f"./static/{filename}")
-    return Response(generate(), mimetype="audio/x-wav")
+    
+    text = request.form.get("text") # Get text from formData
+    filename = "speech.mp3" # Set filename
+    tts = gTTS(text, lang="th") # Setup gTTS
+    tts.save(f"./static/{filename}") # Save gTTS to file
+    return Response(generate(), mimetype="audio/x-wav") # Return Response
 
 
 if __name__ == "__main__":

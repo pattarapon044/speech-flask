@@ -29,22 +29,30 @@
 </div>
 
 <script type=text/javascript>
+  // Speak text function
   function speak() {
-    const textEl = document.querySelector("#text");
-    let url = {{ url_for('speech')|tojson }}
+    const textEl = document.querySelector("#text"); // Get text element
+    let url = {{ url_for('speech')|tojson }} // URL for post text to route `speech` server
+
+    // Create new formdata to send to server
     let data = new FormData()
-    data.append("text", textEl.value)
+    data.append("text", textEl.value) // Append text to formdata
+
+    // Send data to server
     fetch(url, { "method": "POST", "body": data })
-      .then((response) => response.blob())
+      .then((response) => response.blob()) // change response to blob
       .then((blob) => {
-        var reader = new FileReader();
+        // Reab blob to data url for playing
+        var reader = new FileReader(); 
         reader.readAsDataURL(blob); 
+
+        // On blob loaded
         reader.onloadend = function() {
-          var src = reader.result;    
-          document.getElementById("audio").pause()
-          document.getElementById("audio").setAttribute('src', src)
-          document.getElementById("audio").load()
-          document.getElementById("audio").play()
+          var src = reader.result; // Audio source  
+          document.getElementById("audio").pause() // Stop playing audio, if audio is playing
+          document.getElementById("audio").setAttribute('src', src) // Set audio player source to reader result
+          document.getElementById("audio").load() // Let audio player load source
+          document.getElementById("audio").play() // Play audio 
         }
       })
   }
