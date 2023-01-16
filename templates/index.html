@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <div class="card mt-5 mb-2">
+      <div class="card-header">
+        Feature
+      </div>
+      <div class="card-body">
+        <h2 class="card-title">
+          แปลงข้อความเป็นเสียงพูด
+        </h2>
+        <a class="btn btn-success" href="{{ url_for('text_to_speech') }}"> ทดลอง </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card my-2">
+      <div class="card-header">
+        Feature
+      </div>
+      <div class="card-body">
+        <h2 class="card-title">
+          แปลงเสียงพูดเป็นข้อความ
+        </h2>
+        <a class="btn btn-success" href="{{ url_for('speech_to_text') }}"> ทดลอง </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
