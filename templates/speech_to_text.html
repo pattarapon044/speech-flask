@@ -43,7 +43,7 @@
 
   var recognition = new webkitSpeechRecognition();
   recognition.lang = lang
-  recognition.continuous = true
+  recognition.continuous = false;
 
   const contentEl = document.querySelector("#content");
   const startBtn = document.querySelector("#start-btn")
@@ -51,7 +51,8 @@
 
   recognition.onresult = function (event) {
     let results = Object.values(event.results);
-    contentEl.innerText = results.map((value) => value[0].transcript).join(" ")
+    let values = results.map((value) => value[0].transcript)
+    contentEl.innerText = values[values.length-1]
   }
 
   recognition.onstart = function () {
@@ -65,6 +66,7 @@
     end = true;
     startBtn.style.display = "initial";
     stopBtn.style.display = "none";
+    speak();
   }
 
   startBtn.addEventListener('click', function start(event) {
@@ -73,7 +75,6 @@
 
   stopBtn.addEventListener('click', function stop(event) {
     recognition.stop();
-    speak();
   })
 
   function speak() {
@@ -90,7 +91,6 @@
           document.getElementById("audio").pause()
           document.getElementById("audio").setAttribute('src', src)
           document.getElementById("audio").load()
-          document.getElementById("audio").play()
         }
       })
   }
