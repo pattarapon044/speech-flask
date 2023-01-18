@@ -1,4 +1,4 @@
-# Projrct Setup
+# Project Setup
 
 ## Set up venv
 ```
@@ -95,7 +95,7 @@ if __name__ == "__main__":
 2. `@app.route("/text_to_speech")` ใช้สำหรับแสดงผลไฟล์ [templates/text_to_speech.html](templates/text_to_speech.html)
 3. `@app.route("/speech_to_text")` ใช้สำหรับแสดงผลไฟล์ [templates/speech_to_text.html](templates/speech_to_text.html)
 4. `@app.route("/about")` ใช้สำหรับแสดงผลไฟล์ [templates/about.html](templates/about.html)
-5. `@app.route("/speech")` ใช้สำหรับ POST ข้อความเข้ามาเพื่เปลี่ยนเป็นเสียงแล้วส่งเสียงกลับไป
+5. `@app.route("/speech")` ใช้สำหรับ POST ข้อความเข้ามาเพื่อเปลี่ยนเป็นเสียงแล้วส่งเสียงกลับไป
 
 ## Templates
 
@@ -474,7 +474,11 @@ stopBtn.addEventListener('click', function stop(event) {
 })
 ```
 
+<<<<<<< HEAD
 7. ฟังก์ชันนี้จะถูกเริ่มขึ้นหลักจากเราพูดจบหนึ่งประโยค(ดูข้อ 5.) ซึ่ง `url` จะเป็นการใช้ `url_for('speech')` คือการเรียกใช้ `@app.route('/speech')` ของ Flask หลังจากนั้นจะทำการสร้าง `formData` เพื่อส่งข้อมูล form ไปที่ `url` ซึ่งจะส่งข้อความไป ตรง `data.append("text", contentEl.value)` ก็คือเอาข้อความที่แสดงใน `contentEl` ที่เราแปลงเสียงไปแสดงนั่นแหละส่งไปผ่าน key ที่ชื่อว่า `"text"` และจะถูกเรียกใช้ใน [@app.route('/speech')](#@app.route('/speech')) ส่วน `fetch()` จะเป็นการส่งข้อมูลไปที่ `url` ของเรา ซึ่งเป็น `"method": "POST"` เหมือนที่เราตั้งค้าไว้ใน [@app.route('/speech')](#@app.route('/speech')) แล้วส่ง body เป็น `formData` ที่เราสร้างขึ้น จากนั้น `.then()` จะเป็นการเริ่มต้นการทำงานจริงๆ โดยที่ `.then()` อันแรกจะเริ่มส่งข้อมูลข้อความไปแล้วจะได้ `response` กลับมา แล้วใช้ `(response) => response.blob()` จะเป็นการเปลี่ยน `response` เป็น blob (สตริงอ็อบเจ็กต์ขนาดใหญ่ไบนารี) พูดง่าย ๆ ก็คือทำให้เป็นไฟล์ที่สามารถเล่นเป็นเสียงได้ แล้ว `.then()` ถัดไปจะเป็นการเอา blob ที่ถูกแปลงมาไปใช้ เราจะใช้ `FileReader()` ในการอ่าน blob ให้เป็น `dataURL` หรือเอาไฟล์ที่เล่นเป็นเสียงได้เปลี่ยนเป็น URL ที่เล่นได้อีกที (ยุ่งยากเนาะ) ส่วนข้างล่าง `document.getElementById("audio")` จะเป็นการดึง el ที่เอาไว้เล่นเสียงมา แล้วหยุดเสียง เปลี่ยน `src` เป็น URL ที่แปลงมา `load()` แล้ว `play()` เสียงทันที
+=======
+8. ฟังก์ชันนี้จะถูกเริ่มขึ้นหลักจากเราพูดจบหนึ่งประโยค(ดูข้อ 6.) ซึ่ง `url` จะเป็นการใช้ `url_for('speech')` คือการเรียกใช้ `@app.route('/speech')` ของ Flask หลังจากนั้นจะทำการสร้าง `formData` เพื่อส่งข้อมูล form ไปที่ `url` ซึ่งจะส่งข้อความไป ตรง `data.append("text", contentEl.innerText)` ก็คือเอาข้อความที่แสดงใน `contentEl` ที่เราแปลงเสียงไปแสดงนั่นแหละส่งไปผ่าน key ที่ชื่อว่า `"text"` และจะถูกเรียกใช้ใน [@app.route('/speech')](#@app.route('/speech')) ส่วน `fetch()` จะเป็นการส่งข้อมูลไปที่ `url` ของเรา ซึ่งเป็น `"method": "POST"` เหมือนที่เราตั้งค่าไว้ใน [@app.route('/speech')](#@app.route('/speech')) แล้วส่ง body เป็น `formData` ที่เราสร้างขึ้น จากนั้น `.then()` จะเป็นการเริ่มต้นการทำงานจริงๆ โดยที่ `.then()` อันแรกจะเริ่มส่งข้อมูลข้อความไปแล้วจะได้ `response` กลับมา แล้วใช้ `(response) => response.blob()` จะเป็นการเปลี่ยน `response` เป็น blob (สตริงอ็อบเจ็กต์ขนาดใหญ่ไบนารี) พูดง่าย ๆ ก็คือทำให้เป็นไฟล์ที่สามารถเล่นเป็นเสียงได้ แล้ว `.then()` ถัดไปจะเป็นการเอา blob ที่ถูกแปลงมาไปใช้ เราจะใช้ `FileReader()` ในการอ่าน blob ให้เป็น `dataURL` หรือเอาไฟล์ที่เล่นเป็นเสียงได้เปลี่ยนเป็น URL ที่เล่นได้อีกที (ยุ่งยากเนาะ) ส่วนข้างล่าง `document.getElementById("audio")` จะเป็นการดึง el ที่เอาไว้เล่นเสียงมา แล้วหยุดเสียง เปลี่ยน `src` เป็น URL ที่แปลงมา `load()` แล้ว `play()` เสียงทันที
+>>>>>>> 092242a017f7239e7cad474e8c2c5bbb0d702de6
 ```javascript
 // Speak recognition text function
 function speak() {
