@@ -7,20 +7,13 @@
   </div>
   <div class="card-body">
     <button type="button" class="btn btn-success" id="start-btn"> ฟังเสียง </button>
-    <button type="button" class="btn btn-danger" style="display: none;" id="stop-btn"> หยุด
-    </button>
-    <div class="progress mx-auto my-3" style="max-width: 30rem;">
-      <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0"
-        aria-valuemax="10" id="sound"></div>
+    <button type="button" class="btn btn-danger" style="display: none;" id="stop-btn"> หยุด </button>
+    <div class="form-group text-start">
+      <div class="mb-3 mx-auto" style="max-width: 40rem;">
+        <label for="content">ข้อความที่ได้ยิน</label>
+        <textarea class="form-control" id="content" rows="3" disabled readonly></textarea>
+      </div>
     </div>
-  </div>
-</div>
-<div class="card text-center my-3 mx-auto" style="max-width: 50rem;">
-  <div class="card-header">
-    <h2 class="card-title"> ข้อความที่ได้ยิน </h2>
-  </div>
-  <div class="card-body text-start">
-    <p id="content" class="card-text"></p>
   </div>
 </div>
 
@@ -30,9 +23,7 @@
   </div>
   <div class="card-body">
     <div class="audio">
-      <audio controls id="audio">
-        <source src="" type="audio/x-wav">
-      </audio>
+      <audio controls id="audio"></audio>
     </div>
   </div>
 </div>
@@ -41,13 +32,12 @@
   // Define language to recognition
   let lang = "th-TH";
 
-  // Set variable for stop watchsound
-  var end = false;
-
   // Set up recognition
-  var recognition = new webkitSpeechRecognition();
+  var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition
+  var recognition = new Recognition();
   recognition.lang = lang
   recognition.continuous = false;
+  recognition.interimResults = true;
 
   // Queries for common elements
   const contentEl = document.querySelector("#content");
@@ -57,19 +47,16 @@
   // On recognition have the result event
   recognition.onresult = function (event) {
     // Change inner display text element to recognition transcript
-    contentEl.innerText = event.results[0][0].transcript
+    contentEl.value = Object.values(event.results).map(value => value[0].transcript).join("")
   }
 
   // On recognition start recognizes
   recognition.onstart = function () {
-    end = false; // Set sound wave end to false
-    watchSound(); // start watch sound wave
     startBtn.style.display = "none"; // Hide start button
     stopBtn.style.display = "initial"; // Show stop button
   }
 
   recognition.onend = function () {
-    end = true; // Set sound wave end to true
     startBtn.style.display = "initial"; // Show start button
     stopBtn.style.display = "none"; // Hide stop button
     speak(); // Speak recognized text
@@ -91,7 +78,7 @@
 
     // Create new formdata to send to server
     let data = new FormData()
-    data.append("text", contentEl.innerText) // Append text to formdata
+    data.append("text", contentEl.value) // Append text to formdata
 
     // Send data to server
     fetch(url, { "method": "POST", "body": data })
@@ -110,50 +97,6 @@
           document.getElementById("audio").play() // Play audio 
         }
       })
-  }
-
-  // Function to watch sound frequency (Not matters)
-  async function watchSound() {
-    // Get display soundwave element
-    const soundEl = document.querySelector('#sound');
-
-    // Start audio stream
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-    const audioContext = new AudioContext();
-    const mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
-    const analyserNode = audioContext.createAnalyser();
-    mediaStreamAudioSourceNode.connect(analyserNode);
-    const pcmData = new Float32Array(analyserNode.fftSize);
-
-    // Get sound frequency and apply to display soundwave element
-    const onFrame = () => {
-      analyserNode.getFloatTimeDomainData(pcmData);
-      let sumSquares = 0.0;
-      for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; } // Get sound amplitude
-      let wave = Math.sqrt(sumSquares / pcmData.length) * 100 // Get wave frequency as percentage
-
-      // Apply result to display soundwave element
-      soundEl.style.width = `${wave*10}%`
-      soundEl.setAttribute('aria-valuenow', wave)
-      
-      // On recognition end
-      if (end) {
-        stream.getTracks().forEach(function(track) {
-          track.stop();
-        });
-
-        // Reset value of display soundwave element
-        soundEl.style.width = `0%`
-        soundEl.setAttribute('aria-valuenow', 0)
-        return 
-      }
-      
-      // Rewatch if recognition is not end
-      window.requestAnimationFrame(onFrame);
-    };
-
-    // Start watch
-    window.requestAnimationFrame(onFrame);
   }
 </script>
 {% endblock %}
