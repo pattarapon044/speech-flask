@@ -474,7 +474,7 @@ stopBtn.addEventListener('click', function stop(event) {
 })
 ```
 
-7. ฟังก์ชันนี้จะถูกเริ่มขึ้นหลักจากเราพูดจบหนึ่งประโยค(ดูข้อ 5.) ซึ่ง `url` จะเป็นการใช้ `url_for('speech')` คือการเรียกใช้ `@app.route('/speech')` ของ Flask หลังจากนั้นจะทำการสร้าง `formData` เพื่อส่งข้อมูล form ไปที่ `url` ซึ่งจะส่งข้อความไป ตรง `data.append("text", contentEl.value)` ก็คือเอาข้อความที่แสดงใน `contentEl` ที่เราแปลงเสียงไปแสดงนั่นแหละส่งไปผ่าน key ที่ชื่อว่า `"text"` และจะถูกเรียกใช้ใน [@app.route('/speech')](#@app.route('/speech')) ส่วน `fetch()` จะเป็นการส่งข้อมูลไปที่ `url` ของเรา ซึ่งเป็น `"method": "POST"` เหมือนที่เราตั้งค้าไว้ใน [@app.route('/speech')](#@app.route('/speech')) แล้วส่ง body เป็น `formData` ที่เราสร้างขึ้น จากนั้น `.then()` จะเป็นการเริ่มต้นการทำงานจริงๆ โดยที่ `.then()` อันแรกจะเริ่มส่งข้อมูลข้อความไปแล้วจะได้ `response` กลับมา แล้วใช้ `(response) => response.blob()` จะเป็นการเปลี่ยน `response` เป็น blob (สตริงอ็อบเจ็กต์ขนาดใหญ่ไบนารี) พูดง่าย ๆ ก็คือทำให้เป็นไฟล์ที่สามารถเล่นเป็นเสียงได้ แล้ว `.then()` ถัดไปจะเป็นการเอา blob ที่ถูกแปลงมาไปใช้ เราจะใช้ `FileReader()` ในการอ่าน blob ให้เป็น `dataURL` หรือเอาไฟล์ที่เล่นเป็นเสียงได้เปลี่ยนเป็น URL ที่เล่นได้อีกที (ยุ่งยากเนาะ) ส่วนข้างล่าง `document.getElementById("audio")` จะเป็นการดึง el ที่เอาไว้เล่นเสียงมา แล้วหยุดเสียง เปลี่ยน `src` เป็น URL ที่แปลงมา `load()` แล้ว `play()` เสียงทันที
+7. ฟังก์ชันนี้จะถูกเริ่มขึ้นหลักจากเราพูดจบหนึ่งประโยค(ดูข้อ 5.) [ดูข้างล่าง](#speak-function)
 ```javascript
 // Speak recognition text function
 function speak() {
@@ -504,7 +504,7 @@ function speak() {
 }
 ```
 
-## Script ใน text_to_speech.html
+## speak-function
 ```html
 <script type=text/javascript>
   // Speak text function
@@ -538,4 +538,49 @@ function speak() {
 ```
 
 #### Description
-อันนี้เหมือน ข้อ 7. ข้างบนเลยแค่เปลี่ยน `contentEl` เป็น `textEl` ที่เราใส่ข้อความไปแทน
+1. อันนี้จะเป็นการเซ็ต  `url` สำหรับ `route` ที่เราจะ POST ข้อความไปแล้วส่งเสียงกลับมา [ดูเพิ่มเติม](https://flask.palletsprojects.com/en/2.2.x/patterns/javascript/)
+```javascript
+let url = {{ url_for('speech')|tojson }} // URL for post text to route `speech` server
+```
+2. อันนี้จะเป็นการสร้าง `FormData` สำหรับส่งข้อมูลไป [@app.route("/speech")](#@app.route("/speech")) โดยจะถูกเรียกใช้ผ่าน `text = request.form.get("text")` ตรงนี้เราใช้ `data.append("text", textAreaEl.value)` โดยที่ `text` จะเป็น key ที่เราใช้ตรง `request.form.get("text")` ถ้าเปลี่ยนเป็น `data.append("name", textAreaEl.value)` (เปลี่ยน text เป็น name) ก็ต้องใช้ `request.form.get("name")` ใน [@app.route("/speech")](#@app.route("/speech")) ส่วน `textAreaEl.value` ก็คือข้อความที่เราที่เราดึงมาจาก `<textarea></textarea>` ที่เราแสดงข้อความหรือใส่ข้อความ (ดูเพิ่มเติม 1. [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects), 2. [TextArea](https://www.w3schools.com/jsref/prop_textarea_value.asp))
+```javascript
+// Create new formdata to send to server
+let data = new FormData()
+data.append("text", textAreaEl.value) // Append text to formdata
+```
+
+3. อันนี้จะเป็นการ `fetch` หรือดึงข้อมูลมาจาก [server](#project-information) (fetch: [info](https://javascript.info/fetch), [using](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)) 
+
+    * `fetch(url, { "method": "POST", "body": data })`
+
+        * `url` ก็คืออันที่เรากำหนดไว้ในข้อที่ 1 
+        * กำหนด `"method": "POST"` เพื่อใช้สำหรับ POST เพื่อให้ตรงกับ [@app.route("/speech")](#@app.route("/speech"))
+        * กำหนด `"body": data` เพื่อส่ง `FormData` ที่สร้างไว้ในข้อที่ 2 
+
+    * `.then((response) => response.blob()) // change response to blob`
+
+        * อันนี้จะเป็นการเปลี่ยน `response` ให้เป็นในรูปของ **blob** ถ้าจะอธิบายง่าย ๆ **blob** จะเปลี่ยนไฟล์ไปเป็นในรูปแบบของ object เพื่อให้สามารถเปลี่ยนเป็นข้อมูลประเภทอื่นๆได้ เช่น **text** (เช่น เปลี่ยนเสียงเป็น String ที่คอมสามารถอ่านได้), **binary data** (เลขฐาน 2 ที่มีแค่ 1 กับ 0 ที่คอมพิวเตอร์เข้าใจ), หรือ [stream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream) ถ้าดูตรงนี้จะเข้าใจ [ดู](https://javascript.info/blob)
+
+        * `.then` คืออะไร [ดู](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 
+
+    * ส่วนสุดท้ายจะเป็นการเปลี่ยน **blob** เป็น src ที่เล่นเป็นเสียงได้ถ้าเข้าดูลิงก์ที่แปะไว้ของ **blob** ข้างบนน่าจะเข้าใจ ส่วนข้างล่างจะเป็นการเอา src ที่ได้ไปเล่น
+
+```javascript
+// Send data to server
+fetch(url, { "method": "POST", "body": data })
+  .then((response) => response.blob()) // change response to blob
+  .then((blob) => {
+    // Reab blob to data url for playing
+    var reader = new FileReader(); 
+    reader.readAsDataURL(blob); 
+
+    // On blob loaded
+    reader.onloadend = function() {
+      var src = reader.result; // Audio source  
+      document.getElementById("audio").pause() // Stop playing audio, if audio is playing
+      document.getElementById("audio").setAttribute('src', src) // Set audio player source to reader result
+      document.getElementById("audio").load() // Let audio player load source
+      document.getElementById("audio").play() // Play audio 
+    }
+  })
+```
